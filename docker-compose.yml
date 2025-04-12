@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: PricalicaDatabase
+    restart: always
+    environment:
+      POSTGRES_USER: andrej
+      POSTGRES_PASSWORD: 11
+      POSTGRES_DB: Pricalica
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql

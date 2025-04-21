@@ -1,9 +1,7 @@
 ## Build from Dockerfile
 
-`docker-compose up --build`
+`docker-compose up`
 
-- Pogledati u Docker Desktop app ako je stvarno pokrenuta aplikacija
+- Pogledati u Docker Desktop app ako je stvarno pokrenut kontjener
 
-- Ako se radi rebuild stari volume storage neće biti izbrisan ako se ne okine komanda
-
-`docker-compose down -v`
+- Treba imati na umu ako se rade promjene da bi bilo najbolje izbrisati kontejner i njegov image pa onda opet buildat

@@ -17,8 +17,8 @@ docker-compose up
 Nakon pokretanja provjeriti u Docker Desktop aplikaciji je li kontejner uspješno pokrenut.
 
 Vjerodajnice za spajanje su:
-username: `user`
-lozinka: `11`
+- username: `user`
+- lozinka: `11`
 
 ## Napomena
 

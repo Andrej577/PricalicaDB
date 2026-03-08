@@ -1,26 +1,26 @@
 CREATE TABLE tip_korisnika (
-    tip_id INT AUTO_INCREMENT PRIMARY KEY,
-    naziv VARCHAR(20) UNIQUE NOT NULL
+    tipKorisnika_id INT AUTO_INCREMENT PRIMARY KEY,
+    nazivTipaKorisnika VARCHAR(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE status_racuna (
-    status_id INT AUTO_INCREMENT PRIMARY KEY,
-    naziv VARCHAR(20) UNIQUE NOT NULL
+    statusRacuna_id INT AUTO_INCREMENT PRIMARY KEY,
+    nazivStatusaRacuna VARCHAR(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE status_transakcije (
-    status_id INT AUTO_INCREMENT PRIMARY KEY,
-    Naziv VARCHAR(20) UNIQUE NOT NULL
+    statusTransakcije_id INT AUTO_INCREMENT PRIMARY KEY,
+    nazivStatusaTransakcije VARCHAR(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE status_slusanja (
-    status_id INT AUTO_INCREMENT PRIMARY KEY,
-    naziv VARCHAR(20) UNIQUE NOT NULL
+    statusSlusanja_id INT AUTO_INCREMENT PRIMARY KEY,
+    nazivStatusaSlusanja VARCHAR(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE status_dostupnosti (
-    status_id INT AUTO_INCREMENT PRIMARY KEY,
-    naziv VARCHAR(20) UNIQUE NOT NULL
+    statusDostupnosti_id INT AUTO_INCREMENT PRIMARY KEY,
+    nazivStatusaDostupnosti VARCHAR(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE korisnici (
@@ -29,12 +29,12 @@ CREATE TABLE korisnici (
     prezime VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     lozinka_hash VARCHAR(255) NOT NULL,
-    tip_id INT,
+    tipKorisnika_id INT,
     datum_registracije TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status_id INT,
+    statusRacuna_id INT,
     ima_pretplatu BOOLEAN NOT NULL DEFAULT FALSE,
-    FOREIGN KEY (tip_id) REFERENCES tip_korisnika(tip_id),
-    FOREIGN KEY (status_id) REFERENCES status_racuna(status_id)
+    FOREIGN KEY (tipKorisnika_id) REFERENCES tip_korisnika(tipKorisnika_id),
+    FOREIGN KEY (statusRacuna_id) REFERENCES status_racuna(statusRacuna_id)
 );
 
 CREATE TABLE autori (
@@ -45,7 +45,7 @@ CREATE TABLE autori (
 
 CREATE TABLE zanrovi (
     zanr_id INT AUTO_INCREMENT PRIMARY KEY,
-    naziv VARCHAR(50) UNIQUE NOT NULL
+    nazivZanra VARCHAR(50) UNIQUE NOT NULL
 );
 
 CREATE TABLE knjige (
@@ -56,10 +56,10 @@ CREATE TABLE knjige (
     trajanje_min INT NOT NULL,
     opis TEXT,
     datum_dodavanja TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status_id INT,
+    statusDostupnosti_id INT,
     poveznica VARCHAR(255),
     prosjecna_ocjena DECIMAL(3, 2) DEFAULT 0.00,
-    FOREIGN KEY (status_id) REFERENCES status_dostupnosti(status_id),
+    FOREIGN KEY (statusDostupnosti_id) REFERENCES status_dostupnosti(statusDostupnosti_id),
     FOREIGN KEY (zanr_id) REFERENCES zanrovi(zanr_id),
     FOREIGN KEY (autor_id) REFERENCES autori(autor_id)
 );
@@ -69,21 +69,21 @@ CREATE TABLE transakcije (
     korisnik_id INT NOT NULL,
     iznos DECIMAL(10, 2) NOT NULL,
     datum_transakcije TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status_id INT NOT NULL ,
+    statusTransakcije_id INT NOT NULL ,
     FOREIGN KEY (korisnik_id) REFERENCES korisnici(korisnik_id),
-    FOREIGN KEY (status_id) REFERENCES status_transakcije(status_id)
+    FOREIGN KEY (statusTransakcije_id) REFERENCES status_transakcije(statusTransakcije_id)
 );
 
 CREATE TABLE povijest_slusanja (
-    povijest_id INT AUTO_INCREMENT PRIMARY KEY,
+    povijestSlusanja_id INT AUTO_INCREMENT PRIMARY KEY,
     korisnik_id INT NOT NULL,
     knjiga_id INT NOT NULL,
     pozicija INT NOT NULL DEFAULT 0,
     posljednje_slusanje TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status_id INT,
+    statusSlusanja_id INT,
     FOREIGN KEY (korisnik_id) REFERENCES korisnici(korisnik_id),
     FOREIGN KEY (knjiga_id) REFERENCES knjige(knjiga_id),
-    FOREIGN KEY (status_id) REFERENCES status_slusanja(status_id)
+    FOREIGN KEY (statusSlusanja_id) REFERENCES status_slusanja(statusSlusanja_id)
 );
 
 CREATE TABLE interakcije (
@@ -115,7 +115,7 @@ CREATE TRIGGER dodaj_autora
 AFTER INSERT ON korisnici
 FOR EACH ROW
 BEGIN
-    IF NEW.tip_id = 2 THEN
+    IF NEW.tipKorisnika_id = 2 THEN
         INSERT INTO autori (autor_id)
         VALUES (NEW.korisnik_id);
     END IF;
@@ -123,18 +123,20 @@ END;//
 DELIMITER ;
 
 DELIMITER //
+
 CREATE TRIGGER azuriraj_prosjecnu_ocjenu
 AFTER INSERT ON interakcije
 FOR EACH ROW
 BEGIN
     UPDATE knjige
     SET prosjecna_ocjena = (
-        SELECT avg(ocjena)
+        SELECT ROUND(AVG(ocjena), 2)
         FROM interakcije
-        WHERE knjige.knjiga_id = NEW.knjiga_id
-        )
-    WHERE knjiga_id=NEW.knjiga_id;
+        WHERE knjiga_id = NEW.knjiga_id
+    )
+    WHERE knjiga_id = NEW.knjiga_id;
 END;//
+
 DELIMITER ;
 
 DELIMITER $$
@@ -146,9 +148,9 @@ BEGIN
     DECLARE uspjesno BOOLEAN;
 
     -- Dohvati da li je novi status transakcije uspješan
-    SELECT status_id INTO uspjesno
+    SELECT statusTransakcije_id INTO uspjesno
     FROM status_transakcije
-    WHERE status_id = NEW.status_id;
+    WHERE statusTransakcije_id = NEW.statusTransakcije_id;
 
     -- Ako je uspješan, ažuriraj korisnika
     IF uspjesno = 'Uspjesno' THEN
@@ -160,27 +162,27 @@ END $$
 
 DELIMITER ;
 
-INSERT INTO tip_korisnika (tip_id, naziv) VALUES (1, 'Administrator');
-INSERT INTO tip_korisnika (tip_id, naziv) VALUES (2, 'Autor');
-INSERT INTO tip_korisnika (tip_id, naziv) VALUES (3, 'Korisnik');
+INSERT INTO tip_korisnika (tipKorisnika_id, nazivTipaKorisnika) VALUES (1, 'Administrator');
+INSERT INTO tip_korisnika (tipKorisnika_id, nazivTipaKorisnika) VALUES (2, 'Autor');
+INSERT INTO tip_korisnika (tipKorisnika_id, nazivTipaKorisnika) VALUES (3, 'Korisnik');
 
-INSERT INTO status_racuna (status_id, naziv) VALUES (1, 'Ativan');
-INSERT INTO status_racuna (status_id, naziv) VALUES (2, 'Neaktivan');
+INSERT INTO status_racuna (statusRacuna_id, nazivStatusaRacuna) VALUES (1, 'Ativan');
+INSERT INTO status_racuna (statusRacuna_id, nazivStatusaRacuna) VALUES (2, 'Neaktivan');
 
-INSERT INTO status_dostupnosti (naziv) VALUES ('Dostupno');
-INSERT INTO status_dostupnosti (naziv) VALUES ('Nedostupno');
-INSERT INTO status_dostupnosti (naziv) VALUES ('U pripremi');
+INSERT INTO status_dostupnosti (statusDostupnosti_id, nazivStatusaDostupnosti) VALUES (1, 'Dostupno');
+INSERT INTO status_dostupnosti (statusDostupnosti_id, nazivStatusaDostupnosti) VALUES (2, 'Nedostupno');
+INSERT INTO status_dostupnosti (statusDostupnosti_id, nazivStatusaDostupnosti) VALUES (3, 'U pripremi');
 
-INSERT INTO status_transakcije (naziv) VALUES ('Uspjesno');
-INSERT INTO status_transakcije (naziv) VALUES ('Neuspjesno');
+INSERT INTO status_transakcije (statusTransakcije_id, nazivStatusaTransakcije) VALUES (1, 'Uspjesno');
+INSERT INTO status_transakcije (statusTransakcije_id, nazivStatusaTransakcije) VALUES (2, 'Neuspjesno');
 
-INSERT INTO zanrovi (naziv) VALUES ('Triler');
-INSERT INTO zanrovi (naziv) VALUES ('Fantastika');
-INSERT INTO zanrovi (naziv) VALUES ('Drama');
-INSERT INTO zanrovi (naziv) VALUES ('Pustolovina');
-INSERT INTO zanrovi (naziv) VALUES ('Ljubavni roman');
+INSERT INTO zanrovi (nazivZanra) VALUES ('Triler');
+INSERT INTO zanrovi (nazivZanra) VALUES ('Fantastika');
+INSERT INTO zanrovi (nazivZanra) VALUES ('Drama');
+INSERT INTO zanrovi (nazivZanra) VALUES ('Pustolovina');
+INSERT INTO zanrovi (nazivZanra) VALUES ('Ljubavni roman');
 
-INSERT INTO korisnici (ime, prezime, email, lozinka_hash, tip_id, status_id, ima_pretplatu) VALUES
+INSERT INTO korisnici (ime, prezime, email, lozinka_hash, tipKorisnika_id, statusRacuna_id, ima_pretplatu) VALUES
 ('Ivan', 'Horvat', 'ivan.horvat@example.com', 'Ivan123!', 2, 1, TRUE), -- Autor ID 1
 ('Ana', 'Maric', 'ana.maric@example.com', 'AnaSuper#1', 2, 1, FALSE), -- Autor ID 2
 ('Marko', 'Kovac', 'marko.kovac@example.com', 'MarkoPass99', 2, 1, TRUE), -- Autor ID 3
@@ -197,7 +199,7 @@ INSERT INTO korisnici (ime, prezime, email, lozinka_hash, tip_id, status_id, ima
 ('Filip', 'Lovric', 'filip.lovric@example.com', 'FilipTop_2', 3, 1, TRUE), -- Korisnik
 ('Iva', 'Simic', 'iva.simic@example.com', 'IvaHappy!77', 3, 2, FALSE); -- Korisnik
 
-INSERT INTO knjige (naslov, autor_id, zanr_id, trajanje_min, opis, status_id, poveznica, prosjecna_ocjena) VALUES
+INSERT INTO knjige (naslov, autor_id, zanr_id, trajanje_min, opis, statusDostupnosti_id, poveznica, prosjecna_ocjena) VALUES
 ('Ponocni vlak', 1, 2, 320, 'Napeta prica o putovanju koje se pretvara u borbu za opstanak.', 1, 'ponocni_vlak', 4.25),
 ('Tajna vrta', 2, 3, 210, 'Inspirativna prica o otkrivanju zaboravljenog vrta i unutarnjoj snazi.', 1, 'tajna_vrta', 4.50),
 ('Lovac na snove', 3, 5, 400, 'Fantasticna prica o svijetu snova i borbi izmedju dobra i zla.', 2, 'lovac_na_snove', 4.10),

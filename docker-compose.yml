@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: andrej
+      MYSQL_USER: user
       MYSQL_PASSWORD: 11
       MYSQL_DATABASE: Pricalica
     ports:

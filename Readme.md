@@ -1,11 +1,25 @@
-## Build from Dockerfile
+## Pokretanje aplikacije
 
-`docker-compose up`
+Prije pokretanja aplikacije potrebno je prvo kreirati Docker mrežu:
 
-- Pogledati u Docker Desktop app ako je stvarno pokrenut kontjener
+```bash
+docker network create pricalica-network
+```
 
-- Treba imati na umu ako se rade promjene da bi bilo najbolje izbrisati kontejner i njegov image pa onda opet buildat
+Nakon toga pokrenuti Docker Compose:
 
-## Network
+```bash
+docker-compose up
+```
 
-`docker network create pricalica-network`
+## Provjera
+
+Nakon pokretanja provjeriti u Docker Desktop aplikaciji je li kontejner uspješno pokrenut.
+
+## Napomena
+
+Ako se rade promjene u aplikaciji, preporuka je:
+
+1. obrisati postojeći kontejner
+2. obrisati postojeći image
+3. ponovno napraviti build i pokrenuti aplikaciju

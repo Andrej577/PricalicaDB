@@ -8,10 +8,6 @@ CREATE TABLE status_racuna (
     nazivStatusaRacuna VARCHAR(20) UNIQUE NOT NULL
 );
 
-CREATE TABLE status_transakcije (
-    statusTransakcije_id INT AUTO_INCREMENT PRIMARY KEY,
-    nazivStatusaTransakcije VARCHAR(20) UNIQUE NOT NULL
-);
 
 CREATE TABLE status_slusanja (
     statusSlusanja_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -64,15 +60,7 @@ CREATE TABLE knjige (
     FOREIGN KEY (autor_id) REFERENCES autori(autor_id)
 );
 
-CREATE TABLE transakcije (
-    transakcija_id INT AUTO_INCREMENT PRIMARY KEY,
-    korisnik_id INT NOT NULL,
-    iznos DECIMAL(10, 2) NOT NULL,
-    datum_transakcije TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    statusTransakcije_id INT NOT NULL ,
-    FOREIGN KEY (korisnik_id) REFERENCES korisnici(korisnik_id),
-    FOREIGN KEY (statusTransakcije_id) REFERENCES status_transakcije(statusTransakcije_id)
-);
+
 
 CREATE TABLE povijest_slusanja (
     povijestSlusanja_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -139,28 +127,6 @@ END;//
 
 DELIMITER ;
 
-DELIMITER $$
-
-CREATE TRIGGER azuriraj_pretplatu
-AFTER UPDATE ON transakcije
-FOR EACH ROW
-BEGIN
-    DECLARE uspjesno BOOLEAN;
-
-    -- Dohvati da li je novi status transakcije uspješan
-    SELECT statusTransakcije_id INTO uspjesno
-    FROM status_transakcije
-    WHERE statusTransakcije_id = NEW.statusTransakcije_id;
-
-    -- Ako je uspješan, ažuriraj korisnika
-    IF uspjesno = 'Uspjesno' THEN
-        UPDATE korisnici
-        SET ima_pretplatu = TRUE
-        WHERE korisnik_id = NEW.korisnik_id;
-    END IF;
-END $$
-
-DELIMITER ;
 
 INSERT INTO tip_korisnika (tipKorisnika_id, nazivTipaKorisnika) VALUES (1, 'Administrator');
 INSERT INTO tip_korisnika (tipKorisnika_id, nazivTipaKorisnika) VALUES (2, 'Autor');

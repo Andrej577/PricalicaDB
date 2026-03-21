@@ -139,9 +139,6 @@ INSERT INTO status_dostupnosti (statusDostupnosti_id, nazivStatusaDostupnosti) V
 INSERT INTO status_dostupnosti (statusDostupnosti_id, nazivStatusaDostupnosti) VALUES (2, 'Nedostupno');
 INSERT INTO status_dostupnosti (statusDostupnosti_id, nazivStatusaDostupnosti) VALUES (3, 'U pripremi');
 
-INSERT INTO status_transakcije (statusTransakcije_id, nazivStatusaTransakcije) VALUES (1, 'Uspjesno');
-INSERT INTO status_transakcije (statusTransakcije_id, nazivStatusaTransakcije) VALUES (2, 'Neuspjesno');
-
 INSERT INTO zanrovi (nazivZanra) VALUES ('Triler');
 INSERT INTO zanrovi (nazivZanra) VALUES ('Fantastika');
 INSERT INTO zanrovi (nazivZanra) VALUES ('Drama');

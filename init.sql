@@ -33,12 +33,6 @@ CREATE TABLE korisnici (
     FOREIGN KEY (statusRacuna_id) REFERENCES status_racuna(statusRacuna_id)
 );
 
-CREATE TABLE autori (
-    autor_id INT PRIMARY KEY,
-    iznos_prihoda DECIMAL(10, 2) DEFAULT 0.00,
-    FOREIGN KEY (autor_id) REFERENCES korisnici(korisnik_id)
-);
-
 CREATE TABLE zanrovi (
     zanr_id INT AUTO_INCREMENT PRIMARY KEY,
     nazivZanra VARCHAR(50) UNIQUE NOT NULL
@@ -95,20 +89,6 @@ CREATE TABLE analitika (
     vrijeme_slusanja INT NOT NULL DEFAULT 0,
     FOREIGN KEY (knjiga_id) REFERENCES knjige(knjiga_id)
 );
-
-
-
-DELIMITER //
-CREATE TRIGGER dodaj_autora
-AFTER INSERT ON korisnici
-FOR EACH ROW
-BEGIN
-    IF NEW.tipKorisnika_id = 2 THEN
-        INSERT INTO autori (autor_id)
-        VALUES (NEW.korisnik_id);
-    END IF;
-END;//
-DELIMITER ;
 
 DELIMITER //
 

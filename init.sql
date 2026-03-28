@@ -28,7 +28,6 @@ CREATE TABLE korisnici (
     tipKorisnika_id INT,
     datum_registracije TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     statusRacuna_id INT,
-    ima_pretplatu BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (tipKorisnika_id) REFERENCES tip_korisnika(tipKorisnika_id),
     FOREIGN KEY (statusRacuna_id) REFERENCES status_racuna(statusRacuna_id)
 );
@@ -51,7 +50,7 @@ CREATE TABLE knjige (
     prosjecna_ocjena DECIMAL(3, 2) DEFAULT 0.00,
     FOREIGN KEY (statusDostupnosti_id) REFERENCES status_dostupnosti(statusDostupnosti_id),
     FOREIGN KEY (zanr_id) REFERENCES zanrovi(zanr_id),
-    FOREIGN KEY (autor_id) REFERENCES autori(autor_id)
+    FOREIGN KEY (autor_id) REFERENCES korisnici(korisnik_id)
 );
 
 
@@ -125,22 +124,22 @@ INSERT INTO zanrovi (nazivZanra) VALUES ('Drama');
 INSERT INTO zanrovi (nazivZanra) VALUES ('Pustolovina');
 INSERT INTO zanrovi (nazivZanra) VALUES ('Ljubavni roman');
 
-INSERT INTO korisnici (ime, prezime, email, lozinka_hash, tipKorisnika_id, statusRacuna_id, ima_pretplatu) VALUES
-('Ivan', 'Horvat', 'ivan.horvat@example.com', 'Ivan123!', 2, 1, TRUE), -- Autor ID 1
-('Ana', 'Maric', 'ana.maric@example.com', 'AnaSuper#1', 2, 1, FALSE), -- Autor ID 2
-('Marko', 'Kovac', 'marko.kovac@example.com', 'MarkoPass99', 2, 1, TRUE), -- Autor ID 3
-('Petra', 'Novak', 'petra.novak@example.com', 'Petra$Cool7', 2, 1, FALSE), -- Autor ID 4
-('Luka', 'Babic', 'luka.babic@example.com', 'LukaBest88', 2, 1, TRUE), -- Autor ID 5
-('Nikola', 'Petrovic', 'nikola.petrovic@example.com', 'NikolaPass1!', 2, 1, TRUE),
-('Jelena', 'Vukovic', 'jelena.vukovic@example.com', 'Jelena@123', 2, 1, FALSE),
-('Marin', 'Todorovic', 'marin.todorovic@example.com', 'MarinPass7!', 2, 1, TRUE),
-('Ivana', 'Radic', 'ivana.radic@example.com', 'Ivana#Best9', 2, 1, FALSE),
-('Goran', 'Djuric', 'goran.djuric@example.com', 'Goran2023$', 2, 1, TRUE),
-('Maja', 'Peric', 'maja.peric@example.com', 'Maja*Secure5', 1, 1, FALSE), -- Administrator
-('Ante', 'Bozic', 'ante.bozic@example.com', 'AntePower@3', 3, 2, TRUE), -- Korisnik
-('Sara', 'Juric', 'sara.juric@example.com', 'SaraLove44', 3, 1, FALSE), -- Korisnik
-('Filip', 'Lovric', 'filip.lovric@example.com', 'FilipTop_2', 3, 1, TRUE), -- Korisnik
-('Iva', 'Simic', 'iva.simic@example.com', 'IvaHappy!77', 3, 2, FALSE); -- Korisnik
+INSERT INTO korisnici (ime, prezime, email, lozinka_hash, tipKorisnika_id, statusRacuna_id) VALUES
+('Ivan', 'Horvat', 'ivan.horvat@example.com', 'Ivan123!', 2, 1), -- Autor ID 1
+('Ana', 'Maric', 'ana.maric@example.com', 'AnaSuper#1', 2, 1), -- Autor ID 2
+('Marko', 'Kovac', 'marko.kovac@example.com', 'MarkoPass99', 2, 1), -- Autor ID 3
+('Petra', 'Novak', 'petra.novak@example.com', 'Petra$Cool7', 2, 1), -- Autor ID 4
+('Luka', 'Babic', 'luka.babic@example.com', 'LukaBest88', 2, 1), -- Autor ID 5
+('Nikola', 'Petrovic', 'nikola.petrovic@example.com', 'NikolaPass1!', 2, 1),
+('Jelena', 'Vukovic', 'jelena.vukovic@example.com', 'Jelena@123', 2, 1),
+('Marin', 'Todorovic', 'marin.todorovic@example.com', 'MarinPass7!', 2, 1),
+('Ivana', 'Radic', 'ivana.radic@example.com', 'Ivana#Best9', 2, 1),
+('Goran', 'Djuric', 'goran.djuric@example.com', 'Goran2023$', 2, 1),
+('Maja', 'Peric', 'maja.peric@example.com', 'Maja*Secure5', 1, 1), -- Administrator
+('Ante', 'Bozic', 'ante.bozic@example.com', 'AntePower@3', 3, 2), -- Korisnik
+('Sara', 'Juric', 'sara.juric@example.com', 'SaraLove44', 3, 1), -- Korisnik
+('Filip', 'Lovric', 'filip.lovric@example.com', 'FilipTop_2', 3, 1), -- Korisnik
+('Iva', 'Simic', 'iva.simic@example.com', 'IvaHappy!77', 3, 2); -- Korisnik
 
 INSERT INTO knjige (naslov, autor_id, zanr_id, trajanje_min, opis, statusDostupnosti_id, poveznica, prosjecna_ocjena) VALUES
 ('Ponocni vlak', 1, 2, 320, 'Napeta prica o putovanju koje se pretvara u borbu za opstanak.', 1, 'ponocni_vlak', 4.25),
